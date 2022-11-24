@@ -1,0 +1,32 @@
+version: "3.9"
+
+
+services:
+  nginx:
+    command: [nginx-debug, '-g', 'daemon off;']
+    build:
+      context: .
+      dockerfile: config/nginx.Dockerfile
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+    volumes:
+      - ./logs/nginx:/var/log/nginx/
+      - ./prj:/var/www/html/
+
+  php:
+    build:
+      context: .
+      dockerfile: config/php.Dockerfile
+    networks:
+      - app-network
+    volumes:
+      - ./logs/php.log:/var/log/fpm-php.www.log
+      - ./prj:/var/www/html/
+
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
